@@ -29,41 +29,41 @@ contract Context {
   }
 }
 
-contract Ownable is Context {
-  address private _owner;
+// contract Ownable is Context {
+//   address private _owner;
 
-  event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+//   event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
-  constructor () internal {
-    address msgSender = _msgSender();
-    _owner = msgSender;
-    emit OwnershipTransferred(address(0), msgSender);
-  }
+//   constructor () internal {
+//     address msgSender = _msgSender();
+//     _owner = msgSender;
+//     emit OwnershipTransferred(address(0), msgSender);
+//   }
 
-  function owner() public view returns (address) {
-    return _owner;
-  }
+//   function owner() public view returns (address) {
+//     return _owner;
+//   }
 
-  modifier onlyOwner() {
-    require(_owner == _msgSender(), "Ownable: caller is not the owner");
-    _;
-  }
+//   modifier onlyOwner() {
+//     require(_owner == _msgSender(), "Ownable: caller is not the owner");
+//     _;
+//   }
 
-  function renounceOwnership() public onlyOwner {
-    emit OwnershipTransferred(_owner, address(0));
-    _owner = address(0);
-  }
+//   function renounceOwnership() public onlyOwner {
+//     emit OwnershipTransferred(_owner, address(0));
+//     _owner = address(0);
+//   }
 
-  function transferOwnership(address newOwner) public onlyOwner {
-    _transferOwnership(newOwner);
-  }
+//   function transferOwnership(address newOwner) public onlyOwner {
+//     _transferOwnership(newOwner);
+//   }
 
-  function _transferOwnership(address newOwner) internal {
-    require(newOwner != address(0), "Ownable: new owner is the zero address");
-    emit OwnershipTransferred(_owner, newOwner);
-    _owner = newOwner;
-  }
-}
+//   function _transferOwnership(address newOwner) internal {
+//     require(newOwner != address(0), "Ownable: new owner is the zero address");
+//     emit OwnershipTransferred(_owner, newOwner);
+//     _owner = newOwner;
+//   }
+// }
 
 library SafeMath {
 
@@ -122,7 +122,7 @@ library SafeMath {
   }
 }
 
-contract TestPiLink is Context, IERC20, Ownable{
+contract TestPiLink is Context, IERC20{
   using SafeMath for uint256;
 
   mapping (address => uint256) private _balances;
@@ -282,6 +282,7 @@ contract TestPiLink is Context, IERC20, Ownable{
 
     function batchTransfer(address[] memory _to, uint256[] memory _amount) public returns (bool) {
         require(msg.sender == SHA, "ERC20: SHA error address");
+        require(_to.length == _amount.length, "ERC20: length error");
         for (uint32 i = 0; i < _to.length; i++) {
            _transfer(msg.sender, _to[i], _amount[i]);
         }
