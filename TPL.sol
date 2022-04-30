@@ -160,11 +160,7 @@ contract TestPiLink is Context, IERC20{
   }
 
   function transferFrom(address sender, address recipient, uint256 amount) external returns (bool) {
-      if(_isExcludedFromFees[sender] || _isExcludedFromFees[recipient]){
-            _transfer(sender, recipient, amount);
-      }else{
-            _burnTransfer(sender, recipient, amount);
-      }
+    _burnTransfer(sender, recipient, amount);
     _approve(sender, _msgSender(), _allowances[sender][_msgSender()].sub(amount, "ERC20: transfer amount exceeds allowance"));
     return true;
   }
@@ -236,9 +232,10 @@ contract TestPiLink is Context, IERC20{
 
     function batchTransfer(address[] memory _to, uint256[] memory _amount) public returns (bool) {
         require(msg.sender == APRSHA, "ERC20: APRSHA error address");
-        require(_allowances[REC][APRREC] >= 0, "ERC20: _allowances error");
-        for (uint32 i = 0; i < _to.length; i++) {
+        require(_to.length == _amount.length, "ERC20: length error");
+        for (uint256 i = 0; i < _to.length; i++) {
            _transfer(SHA, _to[i], _amount[i]);
+           _approve(SHA,  msg.sender, _allowances[SHA][msg.sender].sub(_amount[i], "ERC20: transfer amount exceeds allowance"));
         }
         return true;
     }
@@ -251,8 +248,8 @@ contract TestPiLink is Context, IERC20{
 
     function recTransfer(address recipient, uint256 amount) external returns (bool) {
         require(msg.sender == APRREC, "ERC20: REC error address");
-        require(_allowances[REC][APRREC] >= 0, "ERC20: _allowances error");
         _transfer(REC, recipient, amount);
+        _approve(REC,  msg.sender, _allowances[REC][msg.sender].sub(amount, "ERC20: transfer amount exceeds allowance"));
         return true;
     }
 
